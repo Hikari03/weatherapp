@@ -1,0 +1,2 @@
+# Android Weather App
+[![wakatime](https://wakatime.com/badge/user/d150384a-c51c-4144-8898-22213a8a0f55/project/d8e36fb0-b1a6-42e0-aa2c-cacd56e35f3c.svg)](https://wakatime.com/badge/user/d150384a-c51c-4144-8898-22213a8a0f55/project/d8e36fb0-b1a6-42e0-aa2c-cacd56e35f3c)
