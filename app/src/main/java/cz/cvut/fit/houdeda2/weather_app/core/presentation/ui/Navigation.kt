@@ -28,7 +28,7 @@ fun Navigation(
         }
 
         composable<Screens.TopLevel.Settings> {
-            SettingsScreen(navController)
+            SettingsScreen()
         }
     }
 
