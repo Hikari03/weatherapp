@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.cvut.fit.houdeda2.weather_app.features.settings.data.SettingsDataStore
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
@@ -11,15 +13,10 @@ import kotlinx.coroutines.runBlocking
 class SettingsViewModel : ViewModel() {
 
     fun getAPIKey(): String {
-        var apiKey = ""
-        runBlocking {
-            apiKey = SettingsDataStore.getAPIKey()
+        return runBlocking {
+            Log.d("SettingsViewModel", "Getting API Key")
+            SettingsDataStore.getAPIKey().first()
         }
-
-        Log.d("SettingsViewModel", "API Key get $apiKey")
-
-        return apiKey
-
     }
 
     fun setAPIKey(apiKey: String) {
