@@ -42,7 +42,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -58,6 +57,13 @@ dependencies {
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.android)
     implementation(libs.koin.android.compose)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.ktor.android)
+    implementation(libs.ktor.contentNegotiation)
+    implementation(libs.ktor.logging)
+    implementation(libs.ktor.serialization.json)
+    implementation(libs.android.room)
+    ksp(libs.android.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

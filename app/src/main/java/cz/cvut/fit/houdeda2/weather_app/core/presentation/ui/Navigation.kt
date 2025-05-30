@@ -20,11 +20,11 @@ fun Navigation(
         startDestination = Screens.TopLevel.CurrentWeather
     ) {
         composable<Screens.TopLevel.CurrentWeather> {
-            CurrentWeatherScreen(navController)
+            CurrentWeatherScreen()
         }
 
         composable<Screens.TopLevel.Forecast> {
-            ForecastScreen(navController)
+            ForecastScreen()
         }
 
         composable<Screens.TopLevel.Settings> {

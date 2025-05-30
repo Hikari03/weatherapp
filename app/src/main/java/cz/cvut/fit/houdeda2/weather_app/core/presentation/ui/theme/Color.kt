@@ -1,4 +1,5 @@
 package cz.cvut.fit.houdeda2.weather_app.core.presentation.ui.theme
+
 import androidx.compose.ui.graphics.Color
 
 val primaryLight = Color(0xFF535A92)

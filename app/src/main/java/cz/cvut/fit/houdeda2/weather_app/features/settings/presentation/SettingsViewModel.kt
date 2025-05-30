@@ -3,8 +3,7 @@ package cz.cvut.fit.houdeda2.weather_app.features.settings.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import cz.cvut.fit.houdeda2.weather_app.features.settings.data.SettingsDataStore
-import kotlinx.coroutines.flow.Flow
+import cz.cvut.fit.houdeda2.weather_app.core.data.datastore.SettingsDataStore
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
