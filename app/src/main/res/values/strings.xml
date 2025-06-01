@@ -6,4 +6,8 @@
     <string name="api_key">OpenWeatherMap API Key</string>
     <string name="enter_api_key">Enter API Key</string>
     <string name="save">Safe</string>
+    <string name="current_location">Selected Location</string>
+    <string name="enter_location_name">Enter location name</string>
+    <string name="search_location">Search</string>
+    <string name="no_locations_found">No locations found</string>
 </resources>
