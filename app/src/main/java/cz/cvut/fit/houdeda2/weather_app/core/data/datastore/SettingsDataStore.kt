@@ -11,16 +11,16 @@ import kotlinx.coroutines.flow.map
 object SettingsDataStore {
 
     private val apiStoreKey = stringPreferencesKey("api_key")
-    private val Context.dataStore by preferencesDataStore(name = "settings")
+    private val Context.settingsDataStore by preferencesDataStore(name = "settings")
 
     fun getAPIKey(): Flow<String> {
-        return appContext.dataStore.data.map { preferences ->
+        return appContext.settingsDataStore.data.map { preferences ->
             preferences[apiStoreKey] ?: ""
         }
     }
 
     suspend fun setAPIKey(apiKey: String) {
-        appContext.dataStore.edit { preferences ->
+        appContext.settingsDataStore.edit { preferences ->
             preferences[apiStoreKey] = apiKey
         }
     }

@@ -3,16 +3,17 @@ package cz.cvut.fit.houdeda2.weather_app.features.weather.presentation.current_w
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import cz.cvut.fit.houdeda2.weather_app.core.data.api.ApiClient
-import cz.cvut.fit.houdeda2.weather_app.features.weather.data.WeatherRepository
-import cz.cvut.fit.houdeda2.weather_app.features.weather.data.api.WeatherRemoteDataSource
-import kotlinx.coroutines.runBlocking
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun CurrentWeatherScreen() {
+fun CurrentWeatherScreen(
+    viewModel: CurrentWeatherViewModel = koinViewModel()
+) {
     Column {
         Text("Current Weather Screen")
 
@@ -25,23 +26,30 @@ fun CurrentWeatherScreen() {
             placeholder = { Text("e.g. Prague") }
         )
 
-        val weatherRepository =
-            WeatherRepository(WeatherRemoteDataSource(ApiClient())) // Assuming you have a WeatherRepository class
 
-        var text = ""
+        var text = viewModel.locationStateStream.collectAsStateWithLifecycle()
 
         Button(
             onClick = {
-
-                runBlocking {
-                    text = "data: $cityName\n" + "weather: ${
-                        weatherRepository.getGeoForLocation(cityName)
-                    }"
-                    Log.d("CurrentWeatherScreen", "Button clicked, weather data: $text")
-                }
+                viewModel.getGeoForLocation(cityName)
             }
         ) {
             Text("Get Weather")
+        }
+
+        if (text.value.location != null) {
+            for (location in text.value.location) {
+                Log.d(
+                    "CurrentWeatherScreen",
+                    "Location: ${location.locationName}, ${location.country}"
+                )
+                Text(
+                    text = "Location: ${location.locationName}, ${location.country}" +
+                            "\nLatitude: ${location.lat}, Longitude: ${location.lon}",
+                    color = MaterialTheme.colorScheme.primary,
+                    fontStyle = MaterialTheme.typography.bodyLarge.fontStyle
+                )
+            }
         }
     }
 }
