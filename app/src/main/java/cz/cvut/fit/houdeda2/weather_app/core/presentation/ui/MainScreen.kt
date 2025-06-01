@@ -29,7 +29,7 @@ fun MainScreen() {
         val currentEntry by navController.currentBackStackEntryAsState()
         val currentDestination = currentEntry?.destination
 
-        BottomAppBar(containerColor = MaterialTheme.colorScheme.onPrimaryContainer) {
+        BottomAppBar(containerColor = MaterialTheme.colorScheme.tertiaryContainer) {
             Screens.TopLevel.all.forEach { screen ->
                 NavigationBarItem(
                     painter = painterResource(id = screen.icon),
@@ -56,16 +56,16 @@ private fun RowScope.NavigationBarItem(
     onClick: () -> Unit
 ) {
     val contentColor = if (selected) {
-        MaterialTheme.colorScheme.outlineVariant
+        MaterialTheme.colorScheme.onTertiaryContainer
     } else {
-        MaterialTheme.colorScheme.onSecondary
+        MaterialTheme.colorScheme.onSecondaryContainer
     }
 
     NavigationBarItem(
         selected = selected,
         onClick = onClick,
         colors = NavigationBarItemDefaults.colors(
-            indicatorColor = MaterialTheme.colorScheme.onTertiaryContainer,
+            indicatorColor = MaterialTheme.colorScheme.onTertiary,
         ),
         icon = {
             Icon(painter = painter, contentDescription = null, tint = contentColor)

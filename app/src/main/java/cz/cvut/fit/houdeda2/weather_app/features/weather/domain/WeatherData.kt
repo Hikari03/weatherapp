@@ -4,9 +4,9 @@ import java.util.Date
 
 data class WeatherData(
     val now: WeatherNow,
-    val forecastMinutely: List<WeatherForecastMinutely>,
-    val forecastHourly: List<WeatherForecastHourly>,
-    val forecastDaily: List<WeatherForecastDaily>
+    val forecastMinutely: List<WeatherForecastMinutely>? = null,
+    val forecastHourly: List<WeatherForecastHourly>? = null,
+    val forecastDaily: List<WeatherForecastDaily>? = null
 ) {
     data class WeatherNow(
         val time: Date,

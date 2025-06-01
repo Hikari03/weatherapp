@@ -39,11 +39,13 @@ object SettingsDataStore {
             val country = preferences[currLocation_countryKey] ?: ""
             val lat = preferences[currLocation_latKey] ?: 0.0
             val lon = preferences[currLocation_lonKey] ?: 0.0
+            Log.d("SettingsDataStore", "get: Current location: $name, $country, $lat, $lon")
             WeatherLocationGeo(name, country, lat, lon)
         }
     }
 
     suspend fun setCurrentLocation(location: WeatherLocationGeo) {
+        Log.d("SettingsDataStore", "set: Current location: ${location.locationName}, ${location.country}, ${location.lat}, ${location.lon}")
         appContext.settingsDataStore.edit { preferences ->
             preferences[currLocation_nameKey] = location.locationName
             preferences[currLocation_countryKey] = location.country

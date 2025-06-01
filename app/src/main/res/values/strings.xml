@@ -10,4 +10,13 @@
     <string name="enter_location_name">Enter location name</string>
     <string name="search_location">Search</string>
     <string name="no_locations_found">No locations found</string>
+    <string name="weather_icon">Weather Icon</string>
+    <string name="loading_weather">Loading Weather</string>
+    <string name="current_temperature">Current Temperature</string>
+    <string name="wind_direction_icon">Wind direction icon</string>
+    <string name="sunrise_sunset_icon">Sunrise/sunset</string>
+    <string name="pressure_icon">pressure icon</string>
+    <string name="humidity_icon">humidity icon</string>
+    <string name="wind_icon">wind icon</string>
+    <string name="refresh_weather">refresh weather</string>
 </resources>

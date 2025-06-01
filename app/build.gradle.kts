@@ -63,6 +63,7 @@ dependencies {
     implementation(libs.ktor.logging)
     implementation(libs.ktor.serialization.json)
     implementation(libs.android.room)
+    implementation(libs.coil.compose)
     ksp(libs.android.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
