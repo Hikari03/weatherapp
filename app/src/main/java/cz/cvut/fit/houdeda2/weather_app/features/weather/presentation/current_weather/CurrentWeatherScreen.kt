@@ -20,14 +20,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -39,6 +35,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import cz.cvut.fit.houdeda2.weather_app.R
 import cz.cvut.fit.houdeda2.weather_app.features.weather.domain.WeatherData
+import cz.cvut.fit.houdeda2.weather_app.features.weather.presentation.CurrentWeatherViewModel
 import org.koin.androidx.compose.koinViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -203,6 +200,7 @@ fun WeatherDetailsCards(
             )
         }
 
+
         PrettyCard {
             DisplayPressure(pressure = weatherNow.pressure)
         }
@@ -261,7 +259,7 @@ fun DisplaySunriseAndSunset(
     Row(
         modifier = Modifier.padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         Icon(
             painter = painterResource(R.drawable.wb_twilight_24),
@@ -271,8 +269,20 @@ fun DisplaySunriseAndSunset(
         )
 
         Text(
-            text = getTimeFromDate(sunrise) + " | " +
-                    getTimeFromDate(sunset),
+            text = getTimeFromDate(sunrise),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+
+        VerticalDivider(
+            modifier = Modifier
+                .padding(horizontal = 8.dp).size(height = 24.dp, width = 1.dp),
+            color = MaterialTheme.colorScheme.tertiary,
+            thickness = 1.dp
+        )
+
+        Text(
+            text = getTimeFromDate(sunset),
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onPrimaryContainer
         )
@@ -286,7 +296,7 @@ fun DisplayPressure(
     Row(
         modifier = Modifier.padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         Icon(
             painter = painterResource(R.drawable.compress_24),
@@ -310,7 +320,7 @@ fun DisplayHumidity(
     Row(
         modifier = Modifier.padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         Icon(
             painter = painterResource(R.drawable.water_drop_24),
@@ -335,7 +345,7 @@ fun DisplayWind(
     Row(
         modifier = Modifier.padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(2.dp)
     ) {
         Icon(
             painter = painterResource(R.drawable.air_24),
@@ -348,6 +358,13 @@ fun DisplayWind(
             text = "$windSpeed m/s",
             style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+
+        VerticalDivider(
+            modifier = Modifier
+                .padding(horizontal = 8.dp).size(height = 24.dp, width = 1.dp),
+            color = MaterialTheme.colorScheme.tertiary,
+            thickness = 1.dp
         )
 
         Icon(
