@@ -86,14 +86,14 @@ class WeatherRepository(
 
         val forecastMinutely = apiWeatherData.minutely?.map { minutely ->
             WeatherData.WeatherForecastMinutely(
-                time = Date(minutely.dt),
+                time = Date(minutely.dt * 1_000),
                 precipitation = minutely.precipitation
             )
         }
 
         val forecastHourly = apiWeatherData.hourly?.map { hourly ->
             WeatherData.WeatherForecastHourly(
-                time = Date(hourly.dt),
+                time = Date(hourly.dt * 1_000),
                 temperature = hourly.temp,
                 feelsLike = hourly.feels_like,
                 pressure = hourly.pressure,
@@ -111,9 +111,9 @@ class WeatherRepository(
 
         val forecastDaily = apiWeatherData.daily?.map { daily ->
             WeatherData.WeatherForecastDaily(
-                date = Date(daily.dt),
-                sunrise = Date(daily.sunrise),
-                sunset = Date(daily.sunset),
+                date = Date(daily.dt * 1_000),
+                sunrise = Date(daily.sunrise * 1_000),
+                sunset = Date(daily.sunset * 1_000),
                 summary = daily.weather[0].description,
                 temperatureDay = daily.temp.day,
                 temperatureMin = daily.temp.min,

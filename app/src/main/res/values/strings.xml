@@ -19,4 +19,14 @@
     <string name="humidity_icon">humidity icon</string>
     <string name="wind_icon">wind icon</string>
     <string name="refresh_weather">refresh weather</string>
+    <string name="minutely_forecast">Minutely forecast</string>
+    <string name="hourly_forecast">Hourly forecast</string>
+    <string name="temp_icon">temperature icon</string>
+    <string name="feels_like_icon">Feels like icon</string>
+    <string name="uv_index_icon">uv index icon</string>
+    <string name="probability_of_precipitation_icon">propability of precipitation icon</string>
+    <string name="rain_icon">rain icon</string>
+    <string name="snow_icon">snowing icon</string>
+    <string name="daily_forecast">Daily forecast</string>
+    <string name="temperature_throughout_day">Temps</string>
 </resources>

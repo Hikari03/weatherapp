@@ -1,7 +1,6 @@
 package cz.cvut.fit.houdeda2.weather_app.features.weather.presentation.current_weather
 
 import android.util.Log
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,8 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Refresh
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,6 +33,7 @@ import coil.compose.AsyncImage
 import cz.cvut.fit.houdeda2.weather_app.R
 import cz.cvut.fit.houdeda2.weather_app.features.weather.domain.WeatherData
 import cz.cvut.fit.houdeda2.weather_app.features.weather.presentation.CurrentWeatherViewModel
+import cz.cvut.fit.houdeda2.weather_app.features.weather.presentation.PrettyCard
 import org.koin.androidx.compose.koinViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -104,6 +102,7 @@ fun CurrentWeatherScreen(
                         color = MaterialTheme.colorScheme.error
                     )
                 }
+
                 CurrentWeather(weatherState.value.weatherData?.now)
             }
         }
@@ -134,17 +133,20 @@ fun CurrentWeather(
         textDecoration = TextDecoration.Underline,
     )
 
-    TempCard(weatherNow)
-    WeatherDetailsCards(weatherNow)
+    TempCard(weatherNow, modifier = Modifier.padding(top = 12.dp))
+    WeatherDetailsCards(weatherNow, modifier = Modifier.padding(top = 12.dp))
 }
 
 
 // Displays the current temperature card with weather information
 @Composable
 fun TempCard(
-    weatherNow: WeatherData.WeatherNow
+    weatherNow: WeatherData.WeatherNow,
+    modifier: Modifier = Modifier
 ) {
-    PrettyCard {
+    PrettyCard(
+        modifier = modifier,
+    ) {
         Column(
             modifier = Modifier.padding(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -188,12 +190,15 @@ fun TempCard(
 // Displays sunrise, sunset, and other weather details in a card
 @Composable
 fun WeatherDetailsCards(
-    weatherNow: WeatherData.WeatherNow
+    weatherNow: WeatherData.WeatherNow,
+    modifier: Modifier = Modifier
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(0.dp),
     ) {
-        PrettyCard {
+        PrettyCard(
+            modifier = modifier
+        ) {
             DisplaySunriseAndSunset(
                 sunrise = weatherNow.sunrise,
                 sunset = weatherNow.sunset
@@ -201,55 +206,60 @@ fun WeatherDetailsCards(
         }
 
 
-        PrettyCard {
+        PrettyCard(
+            modifier = modifier
+        ) {
             DisplayPressure(pressure = weatherNow.pressure)
         }
 
-        PrettyCard {
+        PrettyCard(
+            modifier = modifier
+        ) {
             DisplayHumidity(humidity = weatherNow.humidity)
         }
 
-        PrettyCard {
+        PrettyCard(
+            modifier = modifier
+        ) {
             DisplayWind(
                 windSpeed = weatherNow.windSpeed,
                 windDirection = weatherNow.windDirection
             )
         }
-        PrettyCard {
-            Text(
-                modifier = Modifier.padding(8.dp),
-                text = "UV Index: " + weatherNow.uvIndex.toString(),
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+        PrettyCard(
+            modifier = modifier
+        ) {
+            DisplayUVIndex(
+                uvIndex = weatherNow.uvIndex,
             )
         }
     }
 }
 
 @Composable
-fun PrettyCard(
-    content: @Composable () -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .padding(top = 16.dp),
-        shape = MaterialTheme.shapes.large,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimary
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp
-        ),
-        border = BorderStroke(
-            width = 2.dp,
-            color = MaterialTheme.colorScheme.tertiary
+fun DisplayUVIndex(uvIndex: Double) {
+
+    Row(
+        modifier = Modifier.padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(2.dp)
+    ) {
+
+        Icon(
+            painter = painterResource(R.drawable.uv_index),
+            contentDescription = stringResource(R.string.uv_index_icon),
+            modifier = Modifier.padding(end = 4.dp),
+            tint = MaterialTheme.colorScheme.onPrimaryContainer
         )
 
-    ) {
-        content()
+        Text(
+            text = uvIndex.toString(),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
     }
 }
+
 
 @Composable
 fun DisplaySunriseAndSunset(
@@ -276,7 +286,8 @@ fun DisplaySunriseAndSunset(
 
         VerticalDivider(
             modifier = Modifier
-                .padding(horizontal = 8.dp).size(height = 24.dp, width = 1.dp),
+                .padding(horizontal = 8.dp)
+                .size(height = 24.dp, width = 1.dp),
             color = MaterialTheme.colorScheme.tertiary,
             thickness = 1.dp
         )
@@ -362,7 +373,8 @@ fun DisplayWind(
 
         VerticalDivider(
             modifier = Modifier
-                .padding(horizontal = 8.dp).size(height = 24.dp, width = 1.dp),
+                .padding(horizontal = 8.dp)
+                .size(height = 24.dp, width = 1.dp),
             color = MaterialTheme.colorScheme.tertiary,
             thickness = 1.dp
         )
