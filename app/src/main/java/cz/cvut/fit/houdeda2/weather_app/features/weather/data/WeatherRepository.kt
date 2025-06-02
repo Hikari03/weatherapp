@@ -1,8 +1,9 @@
 package cz.cvut.fit.houdeda2.weather_app.features.weather.data
 
 import android.util.Log
-import cz.cvut.fit.houdeda2.weather_app.core.data.datastore.SettingsDataStore
+import cz.cvut.fit.houdeda2.weather_app.core.data.datastore.DataStore
 import cz.cvut.fit.houdeda2.weather_app.features.weather.data.api.WeatherRemoteDataSource
+import cz.cvut.fit.houdeda2.weather_app.features.weather.data.db.WeatherLocalDataSource
 import cz.cvut.fit.houdeda2.weather_app.features.weather.domain.Constants
 import cz.cvut.fit.houdeda2.weather_app.features.weather.domain.WeatherData
 import cz.cvut.fit.houdeda2.weather_app.features.weather.domain.WeatherLocationGeo
@@ -10,7 +11,8 @@ import kotlinx.coroutines.flow.first
 import java.util.Date
 
 class WeatherRepository(
-    private val weatherRemoteDataSource: WeatherRemoteDataSource
+    private val weatherRemoteDataSource: WeatherRemoteDataSource,
+    private val weatherLocalDataSource: WeatherLocalDataSource
 ) {
 
     suspend fun getGeoForLocation(location: String): List<WeatherLocationGeo> {
@@ -18,14 +20,48 @@ class WeatherRepository(
     }
 
     suspend fun getWeatherForSelectedLocation(): WeatherData {
-        val currentLocation = SettingsDataStore.getCurrentLocationName().first()
+        val currentLocation = DataStore.getCurrentLocationName().first()
         Log.d("WeatherRepository", "getWeatherForSelectedLocation: Current location: ${currentLocation.locationName}, ${currentLocation.country}, ${currentLocation.lat}, ${currentLocation.lon}")
-        return getWeatherByGeo(
-            locationName = currentLocation.locationName,
-            country = currentLocation.country,
-            lat = currentLocation.lat,
-            lon = currentLocation.lon
+
+        val currDate = Date()
+
+        val cachedWeather = weatherLocalDataSource.getLatestWeather(
+            locationId = weatherLocalDataSource.getLocationId(
+                locationName = currentLocation.locationName,
+                country = currentLocation.country,
+                lat = currentLocation.lat.toString(),
+                lon = currentLocation.lon.toString()
+            )
         )
+
+        if (cachedWeather != null && cachedWeather.now.time.time > currDate.time - Constants.CACHE_EXPIRATION_TIME) {
+            Log.d("WeatherRepository", "getWeatherForSelectedLocation: Returning cached weather data")
+            return cachedWeather
+        }
+
+        Log.d("WeatherRepository", "getWeatherForSelectedLocation: Fetching new weather data")
+
+        try {
+            val newData = getWeatherByGeo(
+                locationName = currentLocation.locationName,
+                country = currentLocation.country,
+                lat = currentLocation.lat,
+                lon = currentLocation.lon
+            )
+            weatherLocalDataSource.insertWeatherData(
+                weatherData = newData,
+                lat = currentLocation.lat.toString(),
+                lon = currentLocation.lon.toString()
+            )
+            return newData
+        } catch (e: Exception) {
+            Log.e("WeatherRepository", "Error fetching weather data", e)
+            // If fetching new data fails, return cached data if available
+            cachedWeather?.let {
+                Log.d("WeatherRepository", "Returning cached weather data due to error: ${e.message}")
+                return it
+            } ?: throw e // If no cached data, rethrow the exception
+        }
     }
 
     suspend fun getWeatherByGeo(locationName: String, country: String, lat: Double, lon: Double): WeatherData {

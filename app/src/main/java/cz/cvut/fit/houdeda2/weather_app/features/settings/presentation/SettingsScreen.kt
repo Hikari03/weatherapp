@@ -1,8 +1,12 @@
 package cz.cvut.fit.houdeda2.weather_app.features.settings.presentation
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -27,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -40,13 +45,26 @@ import org.koin.androidx.compose.koinViewModel
 import kotlin.collections.forEach
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cz.cvut.fit.houdeda2.weather_app.features.weather.domain.weatherLocationGeoSaver
+import kotlinx.coroutines.launch
 
 
+@SuppressLint("CoroutineCreationDuringComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel = koinViewModel(),
 ) {
+
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    var apiKey by rememberSaveable { mutableStateOf(viewModel.getAPIKey()) }
+    var selectedLocationGeo by rememberSaveable(stateSaver = weatherLocationGeoSaver) { mutableStateOf(viewModel.getCurrentLocation()) }
+    var location by rememberSaveable { mutableStateOf(selectedLocationGeo.locationName) }
+
+    val locations by viewModel.locationStateStream.collectAsStateWithLifecycle()
+
+    val error = locations.error
 
     Scaffold(
         topBar = {
@@ -60,11 +78,12 @@ fun SettingsScreen(
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.onPrimary
-                )
+                ),
             )
         },
         containerColor = MaterialTheme.colorScheme.inversePrimary,
-    ) { paddingValues ->
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        ) { paddingValues ->
 
         Column(
             modifier = Modifier
@@ -73,11 +92,14 @@ fun SettingsScreen(
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
-            var apiKey by rememberSaveable { mutableStateOf(viewModel.getAPIKey()) }
-            var selectedLocationGeo by rememberSaveable(stateSaver = weatherLocationGeoSaver) { mutableStateOf(viewModel.getCurrentLocation()) }
-            var location by rememberSaveable { mutableStateOf(selectedLocationGeo.locationName) }
-
+            if (error != null) {
+                scope.launch {
+                    snackbarHostState.showSnackbar(
+                        message = error,
+                        duration = SnackbarDuration.Short
+                    )
+                }
+            }
             SettingCard(
                 title = stringResource(id = R.string.api_key),
             ) {
@@ -136,8 +158,6 @@ fun SettingsScreen(
                         contentDescription = stringResource(id = R.string.search_location),
                     )
                 }
-
-                val locations by viewModel.locationStateStream.collectAsStateWithLifecycle()
 
                 if (locations.locations != null) {
                     SelectDesiredLocation(

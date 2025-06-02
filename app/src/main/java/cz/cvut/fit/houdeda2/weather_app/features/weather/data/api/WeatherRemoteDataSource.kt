@@ -2,20 +2,18 @@ package cz.cvut.fit.houdeda2.weather_app.features.weather.data.api
 
 import android.util.Log
 import cz.cvut.fit.houdeda2.weather_app.core.data.api.ApiClient
-import cz.cvut.fit.houdeda2.weather_app.core.data.datastore.SettingsDataStore
-import cz.cvut.fit.houdeda2.weather_app.features.weather.domain.WeatherData
+import cz.cvut.fit.houdeda2.weather_app.core.data.datastore.DataStore
 import cz.cvut.fit.houdeda2.weather_app.features.weather.domain.WeatherLocationGeo
 import io.ktor.client.request.parameter
 import io.ktor.http.HttpMethod
 import kotlinx.coroutines.flow.first
-import java.util.Date
 
 class WeatherRemoteDataSource(
     private val apiClient: ApiClient
 ) {
     suspend fun getGeoLocation(locationName: String): List<WeatherLocationGeo> {
 
-        val apiKey = SettingsDataStore.getAPIKey().first()
+        val apiKey = DataStore.getAPIKey().first()
 
         val response = apiClient.request<List<ApiWeatherGeo>>(
             endpoint = "geo/1.0/direct",
@@ -38,7 +36,7 @@ class WeatherRemoteDataSource(
     }
 
     suspend fun getWeatherByGeo(lat: Double, lon: Double): ApiWeatherData {
-        val apiKey = SettingsDataStore.getAPIKey().first()
+        val apiKey = DataStore.getAPIKey().first()
 
         Log.d("WeatherRemoteDataSource", "Fetching weather for lat: $lat, lon: $lon with API")
 

@@ -9,10 +9,9 @@ import androidx.datastore.preferences.preferencesDataStore
 import cz.cvut.fit.houdeda2.weather_app.appContext
 import cz.cvut.fit.houdeda2.weather_app.features.weather.domain.WeatherLocationGeo
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
-object SettingsDataStore {
+object DataStore {
 
     private val apiStoreKey = stringPreferencesKey("api_key")
     private val currLocation_nameKey = stringPreferencesKey("current_location_name")

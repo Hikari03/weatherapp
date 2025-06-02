@@ -1,5 +1,6 @@
 package cz.cvut.fit.houdeda2.weather_app.features.weather.domain
 
+
 import java.util.Date
 
 data class WeatherData(

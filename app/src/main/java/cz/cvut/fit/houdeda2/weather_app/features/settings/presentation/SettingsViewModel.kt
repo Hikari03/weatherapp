@@ -3,7 +3,7 @@ package cz.cvut.fit.houdeda2.weather_app.features.settings.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import cz.cvut.fit.houdeda2.weather_app.core.data.datastore.SettingsDataStore
+import cz.cvut.fit.houdeda2.weather_app.core.data.datastore.DataStore
 import cz.cvut.fit.houdeda2.weather_app.features.weather.data.WeatherRepository
 import cz.cvut.fit.houdeda2.weather_app.features.weather.domain.WeatherLocationGeo
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,12 +23,18 @@ class SettingsViewModel(
 
     fun getGeoForLocation(location: String) {
         viewModelScope.launch {
-            val locations = weatherRepository.getGeoForLocation(location)
-            if (locations.isNotEmpty()) {
-                _locationStateStream.value = LocationState(locations)
-            } else {
-                _locationStateStream.value = LocationState(null)
+            try {
+                val locations = weatherRepository.getGeoForLocation(location)
+                if (locations.isNotEmpty()) {
+                    _locationStateStream.value = LocationState(locations)
+                } else {
+                    _locationStateStream.value = LocationState(null)
+                }
+            } catch (e: Exception) {
+                Log.e("SettingsViewModel", "Error fetching locations", e)
+                _locationStateStream.value = LocationState(null, "Error fetching locations")
             }
+
         }
     }
 
@@ -36,13 +42,13 @@ class SettingsViewModel(
     fun getAPIKey(): String {
         return runBlocking {
             Log.d("SettingsViewModel", "Getting API Key")
-            SettingsDataStore.getAPIKey().first()
+            DataStore.getAPIKey().first()
         }
     }
 
     fun setAPIKey(apiKey: String) {
         viewModelScope.launch {
-            SettingsDataStore.setAPIKey(apiKey)
+            DataStore.setAPIKey(apiKey)
             Log.d("SettingsViewModel", "API Key set $apiKey")
         }
     }
@@ -50,18 +56,19 @@ class SettingsViewModel(
     fun getCurrentLocation(): WeatherLocationGeo {
         return runBlocking {
             Log.d("SettingsViewModel", "Getting current location")
-            SettingsDataStore.getCurrentLocationName().first()
+            DataStore.getCurrentLocationName().first()
         }
     }
 
     fun selectLocation(location: WeatherLocationGeo) {
         viewModelScope.launch {
-            SettingsDataStore.setCurrentLocation(location)
+            DataStore.setCurrentLocation(location)
         }
     }
 
 }
 
 data class LocationState(
-    val locations: List<WeatherLocationGeo>? = null
+    val locations: List<WeatherLocationGeo>? = null,
+    val error: String? = null
 )

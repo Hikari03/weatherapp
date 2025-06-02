@@ -24,6 +24,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -82,18 +83,32 @@ fun CurrentWeatherScreen(
         },
         containerColor = MaterialTheme.colorScheme.inversePrimary,
     ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = ("Last updated: " + weatherState.value.weatherData?.now?.time?.toString()),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-            CurrentWeather(weatherState.value.weatherData?.now)
+        key(weatherState.value.weatherData) {
+            Log.d("CurrentWeatherScreen", "Recomposition triggered")
+            Column(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = ("Last updated: " + getTimeFromDate(
+                        weatherState.value.weatherData?.now?.time ?: Date()
+                    )),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Log.d("CurrentWeatherScreen", "Weather message: ${weatherState.value.message}")
+                if (weatherState.value.message != null) {
+                    val message = weatherState.value.message ?: ""
+                    Text(
+                        text = message,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+                CurrentWeather(weatherState.value.weatherData?.now)
+            }
         }
     }
 }
