@@ -26,6 +26,14 @@ import cz.cvut.fit.houdeda2.weather_app.features.weather.presentation.DisplayTem
 import cz.cvut.fit.houdeda2.weather_app.features.weather.presentation.DisplayTimeIconHourly
 import cz.cvut.fit.houdeda2.weather_app.features.weather.presentation.PrettyCard
 
+/*
+* For the ForecastScreen, we have three types of cards:
+* 1. MinutelyCard - displays minute-by-minute precipitation data.
+* 2. HourlyCard - displays hourly weather data.
+* 3. DailyCard - displays daily weather data.
+ */
+
+
 @Composable
 fun MinutelyCard(
     minutely: WeatherData.WeatherForecastMinutely,

@@ -8,6 +8,8 @@ import cz.cvut.fit.houdeda2.weather_app.features.weather.di.weatherModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 
+
+// wasn't able to use DI to inject Application context into the object
 private lateinit var application: Application
 val appContext: Context get() = application
 

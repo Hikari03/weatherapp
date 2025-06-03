@@ -272,3 +272,42 @@ fun DisplayPrecipitation(
         )
     }
 }
+
+@Composable
+fun DisplaySunriseAndSunset(
+    sunrise: Date,
+    sunset: Date
+) {
+    Row(
+        modifier = Modifier.padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(2.dp)
+    ) {
+        Icon(
+            painter = painterResource(R.drawable.wb_twilight_24),
+            contentDescription = stringResource(R.string.sunrise_sunset_icon),
+            modifier = Modifier.padding(end = 4.dp),
+            tint = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+
+        Text(
+            text = getTimeFromDate(sunrise),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+
+        VerticalDivider(
+            modifier = Modifier
+                .padding(horizontal = 8.dp)
+                .size(height = 24.dp, width = 1.dp),
+            color = MaterialTheme.colorScheme.tertiary,
+            thickness = 1.dp
+        )
+
+        Text(
+            text = getTimeFromDate(sunset),
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+    }
+}

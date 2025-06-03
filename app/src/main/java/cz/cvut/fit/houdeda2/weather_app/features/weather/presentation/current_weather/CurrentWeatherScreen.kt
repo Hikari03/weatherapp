@@ -38,6 +38,7 @@ import cz.cvut.fit.houdeda2.weather_app.features.weather.domain.WeatherData
 import cz.cvut.fit.houdeda2.weather_app.features.weather.getTimeFromDate
 import cz.cvut.fit.houdeda2.weather_app.features.weather.presentation.CurrentWeatherViewModel
 import cz.cvut.fit.houdeda2.weather_app.features.weather.presentation.DisplayOther
+import cz.cvut.fit.houdeda2.weather_app.features.weather.presentation.DisplaySunriseAndSunset
 import cz.cvut.fit.houdeda2.weather_app.features.weather.presentation.PrettyCard
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.koinInject
@@ -86,7 +87,7 @@ fun CurrentWeatherScreen(
         },
         containerColor = MaterialTheme.colorScheme.inversePrimary,
     ) { paddingValues ->
-        key(weatherState.value.weatherData) {
+        key(weatherState.value.weatherData) { // had issue with recomposition, so I added key
             Column(
                 modifier = Modifier
                     .padding(paddingValues)
@@ -225,45 +226,6 @@ fun WeatherDetailsCards(
                 uvIndex = weatherNow.uvIndex
             )
         }
-    }
-}
-
-@Composable
-fun DisplaySunriseAndSunset(
-    sunrise: Date,
-    sunset: Date
-) {
-    Row(
-        modifier = Modifier.padding(8.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(2.dp)
-    ) {
-        Icon(
-            painter = painterResource(R.drawable.wb_twilight_24),
-            contentDescription = stringResource(R.string.sunrise_sunset_icon),
-            modifier = Modifier.padding(end = 4.dp),
-            tint = MaterialTheme.colorScheme.onPrimaryContainer
-        )
-
-        Text(
-            text = getTimeFromDate(sunrise),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
-        )
-
-        VerticalDivider(
-            modifier = Modifier
-                .padding(horizontal = 8.dp)
-                .size(height = 24.dp, width = 1.dp),
-            color = MaterialTheme.colorScheme.tertiary,
-            thickness = 1.dp
-        )
-
-        Text(
-            text = getTimeFromDate(sunset),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
-        )
     }
 }
 

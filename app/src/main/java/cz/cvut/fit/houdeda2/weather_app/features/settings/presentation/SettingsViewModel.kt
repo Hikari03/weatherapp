@@ -27,6 +27,13 @@ class SettingsViewModel(
     val locationStateStream = _locationStateStream.asStateFlow()
 
 
+    /**
+     * Fetches locations based on the provided location string.
+     * If locations are found, updates the state with the list of locations.
+     * If no locations are found or an error occurs, updates the state with an error message.
+     *
+     * @param location The location string to search for.
+     */
     fun getGeoForLocation(location: String) {
         viewModelScope.launch {
             try {
@@ -53,6 +60,11 @@ class SettingsViewModel(
         }
     }
 
+    /**
+     * Retrieves the user's current location using the LocationProvider.
+     * If successful, updates the state with the location and selects it.
+     * If no location is available or an error occurs, updates the state with an error message.
+     */
     @RequiresPermission(anyOf = [android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION])
     fun getUserLocation() {
         viewModelScope.launch {
