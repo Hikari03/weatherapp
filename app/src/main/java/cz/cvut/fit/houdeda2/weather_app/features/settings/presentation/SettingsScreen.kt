@@ -1,19 +1,22 @@
 package cz.cvut.fit.houdeda2.weather_app.features.settings.presentation
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.pm.PackageManager
+import androidx.annotation.RequiresPermission
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.automirrored.rounded.List
 import androidx.compose.material.icons.rounded.Search
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -23,6 +26,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
@@ -39,16 +45,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cz.cvut.fit.houdeda2.weather_app.R
 import cz.cvut.fit.houdeda2.weather_app.features.weather.domain.WeatherLocationGeo
-import org.koin.androidx.compose.koinViewModel
-import kotlin.collections.forEach
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cz.cvut.fit.houdeda2.weather_app.features.weather.domain.weatherLocationGeoSaver
 import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
 
 
-@SuppressLint("CoroutineCreationDuringComposition")
+@SuppressLint("CoroutineCreationDuringComposition", "MissingPermission")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
@@ -59,7 +65,11 @@ fun SettingsScreen(
     val scope = rememberCoroutineScope()
 
     var apiKey by rememberSaveable { mutableStateOf(viewModel.getAPIKey()) }
-    var selectedLocationGeo by rememberSaveable(stateSaver = weatherLocationGeoSaver) { mutableStateOf(viewModel.getCurrentLocation()) }
+    var selectedLocationGeo by rememberSaveable(stateSaver = weatherLocationGeoSaver) {
+        mutableStateOf(
+            viewModel.getCurrentLocation()
+        )
+    }
     var location by rememberSaveable { mutableStateOf(selectedLocationGeo.locationName) }
 
     val locations by viewModel.locationStateStream.collectAsStateWithLifecycle()
@@ -83,7 +93,7 @@ fun SettingsScreen(
         },
         containerColor = MaterialTheme.colorScheme.inversePrimary,
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        ) { paddingValues ->
+    ) { paddingValues ->
 
         Column(
             modifier = Modifier
@@ -123,9 +133,9 @@ fun SettingsScreen(
 
             SettingCard(
                 title = if (selectedLocationGeo.locationName != "")
-                            "${stringResource(id = R.string.current_location)}: ${selectedLocationGeo.locationName}, ${selectedLocationGeo.country}"
-                        else
-                            stringResource(id = R.string.current_location) + ": None",
+                    "${stringResource(id = R.string.current_location)}: ${selectedLocationGeo.locationName}, ${selectedLocationGeo.country}"
+                else
+                    stringResource(id = R.string.current_location) + ": None",
             ) {
                 TextField(
                     value = location,
@@ -143,20 +153,81 @@ fun SettingsScreen(
                     shape = MaterialTheme.shapes.small
                 )
 
-                IconButton(
-                    onClick = {
-                        viewModel.getGeoForLocation(location)
-                    },
-                    modifier = Modifier.padding(top = 8.dp),
-                    colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = MaterialTheme.colorScheme.tertiary,
-                        contentColor = MaterialTheme.colorScheme.onTertiary
-                    )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Search,
-                        contentDescription = stringResource(id = R.string.search_location),
-                    )
+
+                    TryContentWithLocationPermission(
+                        rationale = stringResource(id = R.string.location_permission_rationale),
+                        permissionNotAvailableContent = {
+                            val message = stringResource(id = R.string.location_permission_required)
+                            IconButton(
+                                onClick = {
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar(
+                                            message = message,
+                                            duration = SnackbarDuration.Short
+                                        )
+                                    }
+                                },
+                                modifier = Modifier.padding(top = 8.dp),
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    containerColor = MaterialTheme.colorScheme.tertiary,
+                                    contentColor = MaterialTheme.colorScheme.onTertiary
+                                )
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.help_24),
+                                    contentDescription = stringResource(id = R.string.location_permission_required)
+                                )
+                            }
+                        }
+                    ) {
+
+
+                        Button(
+                            onClick = {
+
+                                viewModel.getUserLocation()
+                            },
+                            modifier = Modifier.padding(top = 8.dp),
+                            shape = MaterialTheme.shapes.small,
+                        ) {
+                            Row {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.pin_drop_24),
+                                    contentDescription = stringResource(id = R.string.get_current_location),
+                                    tint = MaterialTheme.colorScheme.onPrimary
+                                )
+                                Text(
+                                    text = stringResource(id = R.string.get_current_location),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onPrimary,
+                                    modifier = Modifier.padding(start = 8.dp)
+                                )
+                            }
+                        }
+
+                    }
+
+                    IconButton(
+                        onClick = {
+                            viewModel.getGeoForLocation(location)
+                        },
+                        modifier = Modifier.padding(top = 8.dp),
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = MaterialTheme.colorScheme.tertiary,
+                            contentColor = MaterialTheme.colorScheme.onTertiary
+                        )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Search,
+                            contentDescription = stringResource(id = R.string.search_location),
+                        )
+                    }
+
+
+
                 }
 
                 if (locations.locations != null) {
@@ -174,18 +245,26 @@ fun SettingsScreen(
                 }
             }
 
-            IconButton(
+            Button(
                 onClick = {
                     viewModel.setAPIKey(apiKey)
                     viewModel.selectLocation(selectedLocationGeo)
                 },
                 modifier = Modifier.padding(top = 8.dp)
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.outline_check_24),
-                    contentDescription = stringResource(id = R.string.save),
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
+                Row {
+                    Icon(
+                        painter = painterResource(id = R.drawable.outline_check_24),
+                        contentDescription = stringResource(id = R.string.save),
+                        tint = MaterialTheme.colorScheme.onPrimary
+                    )
+                    Text(
+                        text = stringResource(id = R.string.save),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onPrimary,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
             }
         }
 
@@ -240,7 +319,7 @@ fun SelectDesiredLocation(
             expanded = !expanded
             onButtonClick()
         }) {
-            Icon(Icons.Default.ArrowDropDown, contentDescription = "Select Location")
+            Icon(Icons.AutoMirrored.Rounded.List, contentDescription = "Select Location")
             DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },

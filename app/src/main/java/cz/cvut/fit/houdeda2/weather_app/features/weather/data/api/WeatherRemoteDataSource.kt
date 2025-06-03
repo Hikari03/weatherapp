@@ -35,6 +35,35 @@ class WeatherRemoteDataSource(
 
     }
 
+    suspend fun getLocationFromGeo(lat: Double, lon: Double): WeatherLocationGeo {
+        val apiKey = DataStore.getAPIKey().first()
+
+        Log.d("WeatherRemoteDataSource", "Fetching location for lat: $lat, lon: $lon with API")
+
+        val responseList = apiClient.request<List<ApiWeatherGeo>>(
+            endpoint = "geo/1.0/reverse",
+            method = HttpMethod.Get,
+        ) {
+            parameter("lat", lat)
+            parameter("lon", lon)
+            parameter("limit", 1)
+            parameter("appid", apiKey)
+        }
+
+        if (responseList.isEmpty()) {
+            throw Exception("No location found for the provided coordinates")
+        }
+
+        val response = responseList.first()
+
+        return WeatherLocationGeo(
+            locationName = response.name,
+            country = response.country,
+            lon = response.lon,
+            lat = response.lat
+        )
+    }
+
     suspend fun getWeatherByGeo(lat: Double, lon: Double): ApiWeatherData {
         val apiKey = DataStore.getAPIKey().first()
 

@@ -64,6 +64,8 @@ dependencies {
     implementation(libs.ktor.serialization.json)
     implementation(libs.android.room)
     implementation(libs.coil.compose)
+    implementation(libs.play.services.location)
+    implementation(libs.accompanist.permissions)
     ksp(libs.android.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

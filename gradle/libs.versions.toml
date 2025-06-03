@@ -18,7 +18,8 @@ ktor = "3.1.2"
 kotlinxSerializationJson = "1.8.1"
 android-room = "2.7.1"
 coilComposeVersion = "2.6.0"
-swiperefreshlayout = "1.1.0"
+playServicesLocation = "21.3.0"
+accompanistPermissions = "0.32.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -55,7 +56,9 @@ android-room-compiler = { module = "androidx.room:room-compiler", version.ref = 
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilComposeVersion" }
-androidx-swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

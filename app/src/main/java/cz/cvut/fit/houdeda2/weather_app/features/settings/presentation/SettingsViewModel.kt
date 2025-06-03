@@ -1,8 +1,10 @@
 package cz.cvut.fit.houdeda2.weather_app.features.settings.presentation
 
 import android.util.Log
+import androidx.annotation.RequiresPermission
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cz.cvut.fit.houdeda2.weather_app.core.data.LocationProvider
 import cz.cvut.fit.houdeda2.weather_app.core.data.datastore.DataStore
 import cz.cvut.fit.houdeda2.weather_app.features.weather.data.WeatherRepository
 import cz.cvut.fit.houdeda2.weather_app.features.weather.domain.WeatherLocationGeo
@@ -14,7 +16,8 @@ import kotlinx.coroutines.runBlocking
 
 
 class SettingsViewModel(
-    private val weatherRepository: WeatherRepository
+    private val weatherRepository: WeatherRepository,
+    private val locationProvider: LocationProvider
 ) : ViewModel() {
 
     private val _locationStateStream = MutableStateFlow(LocationState())
@@ -38,6 +41,43 @@ class SettingsViewModel(
         }
     }
 
+    @RequiresPermission(anyOf = [android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION])
+    fun getUserLocation() {
+        viewModelScope.launch {
+            try {
+                val location = locationProvider.getLocation()
+
+                if (location != null) {
+                    val weatherLocation = weatherRepository.getLocationFromGeo(
+                        lat = location.latitude,
+                        lon = location.longitude,
+                    )
+
+                    Log.d("SettingsViewModel", "Current location: $weatherLocation")
+
+                    _locationStateStream.value = LocationState(
+                        listOf(weatherLocation),
+                        "Location retrieved successfully"
+                    )
+
+                    selectLocation(weatherLocation)
+
+                } else {
+                    Log.w("SettingsViewModel", "No last known location available")
+                    _locationStateStream.value = LocationState(
+                        null,
+                        "Could not retrieve last known location. Please enable location services."
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e("SettingsViewModel", "Error getting last location", e)
+                _locationStateStream.value = LocationState(
+                    null,
+                    "Could not retrieve last known location. Please enable location services."
+                )
+            }
+        }
+    }
 
     fun getAPIKey(): String {
         return runBlocking {

@@ -79,7 +79,6 @@ fun CurrentWeatherScreen(
         containerColor = MaterialTheme.colorScheme.inversePrimary,
     ) { paddingValues ->
         key(weatherState.value.weatherData) {
-            Log.d("CurrentWeatherScreen", "Recomposition triggered")
             Column(
                 modifier = Modifier
                     .padding(paddingValues)

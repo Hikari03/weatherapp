@@ -19,6 +19,10 @@ class WeatherRepository(
         return weatherRemoteDataSource.getGeoLocation(location)
     }
 
+    suspend fun getLocationFromGeo(lat: Double, lon: Double): WeatherLocationGeo {
+        return weatherRemoteDataSource.getLocationFromGeo(lat, lon)
+    }
+
     suspend fun getWeatherForSelectedLocation(): WeatherData {
         val currentLocation = DataStore.getCurrentLocationName().first()
         Log.d("WeatherRepository", "getWeatherForSelectedLocation: Current location: ${currentLocation.locationName}, ${currentLocation.country}, ${currentLocation.lat}, ${currentLocation.lon}")
