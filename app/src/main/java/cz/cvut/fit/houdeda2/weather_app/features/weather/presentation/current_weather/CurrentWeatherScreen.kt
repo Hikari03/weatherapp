@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.google.firebase.analytics.FirebaseAnalytics
+import com.google.firebase.analytics.logEvent
 import cz.cvut.fit.houdeda2.weather_app.R
 import cz.cvut.fit.houdeda2.weather_app.features.weather.domain.WeatherData
 import cz.cvut.fit.houdeda2.weather_app.features.weather.getTimeFromDate
@@ -37,16 +39,21 @@ import cz.cvut.fit.houdeda2.weather_app.features.weather.presentation.CurrentWea
 import cz.cvut.fit.houdeda2.weather_app.features.weather.presentation.DisplayOther
 import cz.cvut.fit.houdeda2.weather_app.features.weather.presentation.PrettyCard
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CurrentWeatherScreen(
-    viewModel: CurrentWeatherViewModel = koinViewModel()
+    viewModel: CurrentWeatherViewModel = koinViewModel(),
+    firebaseAnalytics: FirebaseAnalytics = koinInject()
 ) {
 
     val weatherState = viewModel.weatherStateStream.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) {
+        firebaseAnalytics.logEvent(FirebaseAnalytics.Event.SCREEN_VIEW) {
+            param(FirebaseAnalytics.Param.SCREEN_NAME, "CurrentWeatherScreen")
+        }
         viewModel.getWeather()
     }
 

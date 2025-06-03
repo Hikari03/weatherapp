@@ -1,9 +1,13 @@
+import com.google.firebase.appdistribution.gradle.firebaseAppDistribution
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     kotlin("plugin.serialization") version "1.9.0"
+    id("com.google.gms.google-services")
+    id("com.google.firebase.appdistribution")
 }
 
 android {
@@ -21,6 +25,13 @@ android {
     }
 
     buildTypes {
+
+        debug {
+            firebaseAppDistribution {
+                artifactType = "APK"
+            }
+        }
+
         release {
             isMinifyEnabled = false
             proguardFiles(
@@ -74,4 +85,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    implementation(platform("com.google.firebase:firebase-bom:33.14.0"))
+    implementation(libs.firebase.analytics)
 }
