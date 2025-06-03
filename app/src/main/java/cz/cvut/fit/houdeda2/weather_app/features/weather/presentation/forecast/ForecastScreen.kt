@@ -167,7 +167,7 @@ fun Daily(daily: List<WeatherData.WeatherForecastDaily>, modifier: Modifier) {
             )
 
             LazyRow(
-                modifier = modifier
+                modifier = modifier,
             ) {
                 items(daily.size) { index ->
                     val dailyData = daily[index]
@@ -184,10 +184,8 @@ fun Daily(daily: List<WeatherData.WeatherForecastDaily>, modifier: Modifier) {
 @Composable
 fun DailyCard(daily: WeatherData.WeatherForecastDaily, modifier: Modifier) {
 
-    val scrollState = rememberScrollState()
-
     PrettyCard(
-        modifier = modifier.size(width = 200.dp, height = 440.dp).verticalScroll(scrollState)
+        modifier = modifier.size(width = 200.dp, height = 730.dp)
     ) {
 
         Column(
@@ -197,7 +195,7 @@ fun DailyCard(daily: WeatherData.WeatherForecastDaily, modifier: Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = getTimeFromDate(daily.date),
+                text = getTimeFromDate(daily.date, true),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.tertiary
             )
@@ -379,7 +377,7 @@ fun HourlyCard(hourly: WeatherData.WeatherForecastHourly, modifier: Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            DisplayTimeIcon(
+            DisplayTimeIconHourly(
                 time = hourly.time,
                 iconUrl = hourly.iconUrl
             )
@@ -563,7 +561,7 @@ fun MinutelyCard(
 }
 
 @Composable
-fun DisplayTimeIcon(
+fun DisplayTimeIconHourly(
     time: Date,
     iconUrl: String
 ) {
@@ -573,7 +571,7 @@ fun DisplayTimeIcon(
     ) {
 
         Text(
-            text = getTimeFromDate(time),
+            text = getTimeFromDate(time, true, true),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.tertiary
         )

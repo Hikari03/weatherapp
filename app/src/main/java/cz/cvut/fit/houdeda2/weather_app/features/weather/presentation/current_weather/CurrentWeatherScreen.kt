@@ -388,8 +388,11 @@ fun DisplayWind(
 }
 
 
-fun getTimeFromDate(date: Date): String {
-    val formatter = SimpleDateFormat("hh:mm a", Locale.getDefault())
+fun getTimeFromDate(date: Date, day: Boolean = false, lineBreak: Boolean = false): String {
+    val dayFString = if (day) "EEEE d.M" else ""
+    val lineBreakString = if (lineBreak) "\n" else " "
+
+    val formatter = SimpleDateFormat(dayFString + lineBreakString +"HH:mm", Locale.getDefault())
     return formatter.format(date)
 }
 

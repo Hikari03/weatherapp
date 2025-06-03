@@ -1,6 +1,7 @@
 package cz.cvut.fit.houdeda2.weather_app.features.weather.data.api
 
 import cz.cvut.fit.houdeda2.weather_app.features.weather.data.api.ApiWeatherData.ApiWeatherNow.ApiWeatherDescription
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -56,6 +57,7 @@ class ApiWeatherData(
     ) {
         @Serializable
         class ApiWeatherPrecipitation(
+            @SerialName("1h")
             val amount: Double = 0.0
         )
     }
