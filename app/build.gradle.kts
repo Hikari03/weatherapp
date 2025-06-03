@@ -8,6 +8,7 @@ plugins {
     kotlin("plugin.serialization") version "1.9.0"
     id("com.google.gms.google-services")
     id("com.google.firebase.appdistribution")
+    id("com.google.firebase.crashlytics")
 }
 
 android {
@@ -86,6 +87,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(platform("com.google.firebase:firebase-bom:33.14.0"))
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.google.firebase.analytics)
 }
