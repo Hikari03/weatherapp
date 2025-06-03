@@ -44,7 +44,10 @@ object DataStore {
     }
 
     suspend fun setCurrentLocation(location: WeatherLocationGeo) {
-        Log.d("SettingsDataStore", "set: Current location: ${location.locationName}, ${location.country}, ${location.lat}, ${location.lon}")
+        Log.d(
+            "SettingsDataStore",
+            "set: Current location: ${location.locationName}, ${location.country}, ${location.lat}, ${location.lon}"
+        )
         appContext.settingsDataStore.edit { preferences ->
             preferences[currLocation_nameKey] = location.locationName
             preferences[currLocation_countryKey] = location.country

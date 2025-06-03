@@ -1,7 +1,13 @@
 package cz.cvut.fit.houdeda2.weather_app.features.weather.domain
+
 import androidx.compose.runtime.saveable.Saver
 
-data class WeatherLocationGeo(val locationName: String, val country: String, val lat: Double, val lon: Double)
+data class WeatherLocationGeo(
+    val locationName: String,
+    val country: String,
+    val lat: Double,
+    val lon: Double
+)
 
 val weatherLocationGeoSaver = Saver<WeatherLocationGeo, List<Any?>>(
 

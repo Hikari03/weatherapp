@@ -2,7 +2,6 @@ package cz.cvut.fit.houdeda2.weather_app.core.data
 
 import android.Manifest
 import android.location.Location
-import android.os.SystemClock.sleep
 import android.util.Log
 import androidx.annotation.RequiresPermission
 import com.google.android.gms.location.CurrentLocationRequest

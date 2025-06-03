@@ -19,10 +19,16 @@ class CurrentWeatherViewModel(
     fun getWeather() {
         viewModelScope.launch {
             try {
-                _weatherStateStream.value = WeatherState(weatherRepository.getWeatherForSelectedLocation())
+                _weatherStateStream.value =
+                    WeatherState(weatherRepository.getWeatherForSelectedLocation())
             } catch (e: Exception) {
-                Log.e("WeatherViewModel", "Error fetching weather data\nYou are not connected to the internet or don't have valid API Key", e)
-                _weatherStateStream.value = WeatherState(weatherData = null, message = "Error fetching data" )
+                Log.e(
+                    "WeatherViewModel",
+                    "Error fetching weather data\nYou are not connected to the internet or don't have valid API Key",
+                    e
+                )
+                _weatherStateStream.value =
+                    WeatherState(weatherData = null, message = "Error fetching data")
             }
         }
     }

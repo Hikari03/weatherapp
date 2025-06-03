@@ -25,7 +25,10 @@ class WeatherRepository(
 
     suspend fun getWeatherForSelectedLocation(): WeatherData {
         val currentLocation = DataStore.getCurrentLocationName().first()
-        Log.d("WeatherRepository", "getWeatherForSelectedLocation: Current location: ${currentLocation.locationName}, ${currentLocation.country}, ${currentLocation.lat}, ${currentLocation.lon}")
+        Log.d(
+            "WeatherRepository",
+            "getWeatherForSelectedLocation: Current location: ${currentLocation.locationName}, ${currentLocation.country}, ${currentLocation.lat}, ${currentLocation.lon}"
+        )
 
         val currDate = Date()
 
@@ -39,7 +42,10 @@ class WeatherRepository(
         )
 
         if (cachedWeather != null && cachedWeather.now.time.time > currDate.time - Constants.CACHE_EXPIRATION_TIME) {
-            Log.d("WeatherRepository", "getWeatherForSelectedLocation: Returning cached weather data")
+            Log.d(
+                "WeatherRepository",
+                "getWeatherForSelectedLocation: Returning cached weather data"
+            )
             return cachedWeather
         }
 
@@ -62,13 +68,21 @@ class WeatherRepository(
             Log.e("WeatherRepository", "Error fetching weather data", e)
             // If fetching new data fails, return cached data if available
             cachedWeather?.let {
-                Log.d("WeatherRepository", "Returning cached weather data due to error: ${e.message}")
+                Log.d(
+                    "WeatherRepository",
+                    "Returning cached weather data due to error: ${e.message}"
+                )
                 return it
             } ?: throw e // If no cached data, rethrow the exception
         }
     }
 
-    suspend fun getWeatherByGeo(locationName: String, country: String, lat: Double, lon: Double): WeatherData {
+    suspend fun getWeatherByGeo(
+        locationName: String,
+        country: String,
+        lat: Double,
+        lon: Double
+    ): WeatherData {
         val apiWeatherData = weatherRemoteDataSource.getWeatherByGeo(lat = lat, lon = lon)
 
         val weatherNow = WeatherData.WeatherNow(
