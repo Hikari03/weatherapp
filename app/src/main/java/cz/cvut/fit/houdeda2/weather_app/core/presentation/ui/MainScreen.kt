@@ -37,7 +37,9 @@ fun MainScreen() {
                     selected = currentDestination?.hierarchy?.any { it.hasRoute(screen::class) } == true,
                     onClick = {
                         navController.navigate(screen) {
-                            popUpTo(navController.graph.findStartDestination().id)
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                inclusive = true
+                            }
                             launchSingleTop = true
                         }
                     }

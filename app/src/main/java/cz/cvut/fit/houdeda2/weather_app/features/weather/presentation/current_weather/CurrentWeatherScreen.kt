@@ -87,33 +87,32 @@ fun CurrentWeatherScreen(
         },
         containerColor = MaterialTheme.colorScheme.inversePrimary,
     ) { paddingValues ->
-        key(weatherState.value.weatherData) { // had issue with recomposition, so I added key
-            Column(
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+        Column(
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = ("Last updated: " + getTimeFromDate(
+                    weatherState.value.weatherData?.now?.time ?: Date()
+                )),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+            Log.d("CurrentWeatherScreen", "Weather message: ${weatherState.value.message}")
+            if (weatherState.value.message != null) {
+                val message = weatherState.value.message ?: ""
                 Text(
-                    text = ("Last updated: " + getTimeFromDate(
-                        weatherState.value.weatherData?.now?.time ?: Date()
-                    )),
+                    text = message,
                     style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    color = MaterialTheme.colorScheme.error
                 )
-                Log.d("CurrentWeatherScreen", "Weather message: ${weatherState.value.message}")
-                if (weatherState.value.message != null) {
-                    val message = weatherState.value.message ?: ""
-                    Text(
-                        text = message,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.error
-                    )
-                }
-
-                CurrentWeather(weatherState.value.weatherData?.now)
             }
+
+            CurrentWeather(weatherState.value.weatherData?.now)
         }
+
     }
 }
 
