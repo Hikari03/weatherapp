@@ -6,7 +6,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 class ApiWeatherData(
-    val timezone_offset: Int,
     val current: ApiWeatherNow,
     val minutely: List<ApiWeatherMinutely>? = null,
     val hourly: List<ApiWeatherHourly>? = null,

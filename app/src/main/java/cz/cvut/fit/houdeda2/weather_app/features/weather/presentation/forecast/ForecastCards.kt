@@ -189,7 +189,7 @@ fun DailyCard(daily: WeatherData.WeatherForecastDaily, modifier: Modifier) {
             )
 
             Text(
-                modifier = Modifier.size(width = 100.dp, height = 40.dp),
+                modifier = Modifier.size(width = 100.dp, height = 50.dp),
                 text = daily.summary,
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onPrimaryContainer,
